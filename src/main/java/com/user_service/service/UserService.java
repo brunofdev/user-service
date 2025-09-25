@@ -27,13 +27,16 @@ public class UserService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    private String encodeUserPassword(String password){
+        return passwordEncoder.encode(password);
+    }
+
     public void createNewUser (UserSignupDTO userSignupDTO){
         userValidation.validate(userSignupDTO);
-        String encodedPassword = passwordEncoder.encode(userSignupDTO.getPassword());
-        userSignupDTO.setPassword(encodedPassword);
-        User user = userMapper.mapUserSignupDTOtoUser(userSignupDTO);
+        User user = userMapper.mapUserSignupDTOtoUser(userSignupDTO, encodeUserPassword(userSignupDTO.getPassword()));
         userRepository.save(user);
     }
+
     public void checkCredentials(@Valid UserCredentialDTO userCredentialDTO) {
         User user = userRepository.findByUserName(userCredentialDTO.getUserName()).orElseThrow(() -> new UserNotFoundException("Nome de usuario não encontrado"));
         if(!passwordEncoder.matches(userCredentialDTO.getPassword(), user.getPassword()))
