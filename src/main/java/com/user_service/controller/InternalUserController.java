@@ -21,11 +21,8 @@ public class InternalUserController {
     }
 
     @PostMapping("/validate-credential")
-    public ResponseEntity<Void> validateCredentials(@Valid @RequestBody UserCredentialDTO userCredentialDTO) {
-        boolean isValid = userService.checkCredentials(userCredentialDTO);
-        if (isValid) {
-            return ResponseEntity.ok().build();
-        }
-        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
+    public ResponseEntity<Void> validateCredentials(@Valid @RequestBody UserCredentialDTO userCredentialDTO){
+        userService.checkCredentials(userCredentialDTO);
+        return ResponseEntity.ok().build();
     }
 }
