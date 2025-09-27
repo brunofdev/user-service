@@ -1,12 +1,9 @@
 package com.user_service.controller;
 
 import com.user_service.dto.UserCredentialDTO;
-import com.user_service.dto.UserSignupDTO;
 import com.user_service.service.UserService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,19 +11,21 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/api/users")
-public class UserController {
+@RequestMapping("/internal/users") // Um prefixo exclusivo para rotas internas
+public class InternalUserController {
 
     private final UserService userService;
 
-    @Autowired
-    public UserController(UserService userService){
+    public InternalUserController(UserService userService) {
         this.userService = userService;
     }
 
-    @PostMapping("/register")
-    public ResponseEntity<Void> registerUser(@Valid @RequestBody UserSignupDTO userSignupDTO){
-        userService.createNewUser(userSignupDTO);
-        return ResponseEntity.status(HttpStatus.CREATED).build();
+    @PostMapping("/validate-credential")
+    public ResponseEntity<Void> validateCredentials(@Valid @RequestBody UserCredentialDTO userCredentialDTO) {
+        boolean isValid = userService.checkCredentials(userCredentialDTO);
+        if (isValid) {
+            return ResponseEntity.ok().build();
+        }
+        return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 }
