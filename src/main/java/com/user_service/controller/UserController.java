@@ -10,7 +10,7 @@ import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-@CrossOrigin(origins = "*")
+@CrossOrigin(origins = "https://www.brunofragadev.com")
 @RestController
 @RequestMapping("/api/users")
 public class UserController {
